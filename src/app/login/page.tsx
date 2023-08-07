@@ -1,10 +1,11 @@
-'use client'
-import { useEffect, useState } from "react";
+"use client";
+import { useContext, useEffect } from "react";
 
+import { UserContext } from "@/contexts/UserProvider";
 
 export default function Home() {
 
-    const [loginData, setLoginData] = useState(false);
+    const { user, setUser } = useContext(UserContext);
 
     return (
         <main className="flex flex-col justify-center items-center">
@@ -12,11 +13,11 @@ export default function Home() {
 
             <button onClick={(e)=>{
                 e.preventDefault()
-                console.log(loginData);
+                console.log(user);
 
-                setLoginData((previusValue)=>{
-                    return !previusValue;
-                });
+                var mockUser = { nome: "ADM", token: "admManda" };
+
+                setUser(mockUser);
             }}>
                 Fazer login mockado
             </button>
