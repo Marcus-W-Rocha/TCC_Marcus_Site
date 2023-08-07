@@ -12,11 +12,16 @@ export default function Header() {
     var actual_page = usePathname();
     const router = useRouter();
 
+
     useEffect(() => {
-        if (actual_page !== "/login" && user) {
+        if (actual_page !== "/login" && user === null) {
             router.replace("/login");
         }
-    }, [actual_page, user, router]);
+        if (actual_page === "/login" && user !== null) {
+            router.replace("/home");
+        }
+    }, [actual_page, user, router])
+
     return (
         <header>
             <button className="rounded-md bg-slate-300 m-2 p-2 hover:bg-slate-400">
