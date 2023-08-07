@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import App_Name from "@/components/General_Info";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 
+import {UserContext} from "@/contexts/UserProvider"
+
 export default function Header() {
+    const { user } = useContext(UserContext);
     var actual_page = usePathname();
     const router = useRouter();
 
     useEffect(() => {
-        var logged = true
-
-        if (actual_page !== "/login" && !logged) {
+        if (actual_page !== "/login" && user) {
             router.replace("/login");
         }
-    }, [actual_page, router]);
-
+    }, [actual_page, user, router]);
     return (
         <header>
             <button className="rounded-md bg-slate-300 m-2 p-2 hover:bg-slate-400">
