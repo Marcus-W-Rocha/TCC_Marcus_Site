@@ -14,7 +14,7 @@ export default NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 24 * 60 * 60,
   },
   providers: [
     CredentialsProvider({
@@ -22,25 +22,25 @@ export default NextAuth({
       type: 'credentials',
       credentials: {},
       async authorize(credentials) {
-        const { email, password } = credentials as { email: string, password: string }
+        const { username, password } = credentials as { username: string, password: string }
 
         // const res = await axios.post(`https://google.com`, {
         //   "email": email,
         //   "password": password,
         // })
-        const res = await axios.get(`https://google.com`)
+        const res = await axios.get(`https://google.com`)//request login
 
         // const res = {
         //   status: 200,
         //   data: { id: 0, name: "Mock_User", email: "mock@email.com", token: "mocktoken" }
         // }
 
-        if (res.status !== 200) {
+        if (res.data == "Credenciais inválidas") {
           throw new Error('Credenciais inválidas')
         }
 
         if (res.data) {
-          return { id: 0, name: "Mock_User", email: "mock@email.com", token: "mocktoken" }
+          return { id: 0, name: "Mock_User", email: "mock@email.com", token: "mocktoken" }// atribuir dados de login
         } else {
           return null;
         }
@@ -65,6 +65,6 @@ export default NextAuth({
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: '/',
   }
 })
