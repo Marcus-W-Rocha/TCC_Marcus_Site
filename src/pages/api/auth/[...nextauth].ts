@@ -1,70 +1,86 @@
-// import { API_URL } from "@/constants"
-import axios from "axios"
-import NextAuth from "next-auth"
-import CredentialsProvider from 'next-auth/providers/credentials'
-import { Session } from "next-auth"
+import axios from "axios";
+import NextAuth from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+import {URLBase} from './constant'
 
 declare module "next-auth" {
-  interface Session {
-    token: string
-  }
+    interface Session {
+        token: string;
+        user?: {
+            id?: number;
+            token?: string;
+            nome?: string;
+            typeUser?: number;
+        };
+    }
+    interface User {
+        id: number;
+        token: string;
+        typeUser?: number;
+    }
 }
 
+type userCredentials = {
+    userName: string;
+    password: string;
+};
+
 export default NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60,
-  },
-  providers: [
-    CredentialsProvider({
-      id: 'credentials',
-      type: 'credentials',
-      credentials: {},
-      async authorize(credentials) {
-        const { username, password } = credentials as { username: string, password: string }
-
-        // const res = await axios.post(`https://google.com`, {
-        //   "email": email,
-        //   "password": password,
-        // })
-        const res = await axios.get(`https://google.com`)//request login
-
-        // const res = {
-        //   status: 200,
-        //   data: { id: 0, name: "Mock_User", email: "mock@email.com", token: "mocktoken" }
-        // }
-
-        if (res.data == "Credenciais inválidas") {
-          throw new Error('Credenciais inválidas')
-        }
-
-        if (res.data) {
-          return { id: 0, name: "Mock_User", email: "mock@email.com", token: "mocktoken" }// atribuir dados de login
-        } else {
-          return null;
-        }
-      }
-    })
-  ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.name = user.name
-        token.email = user.email
-        if ('token' in user) {
-          token.token = user.token
-        }
-      }
-      return token
+    secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        strategy: "jwt",
+        maxAge: 24 * 60 * 60,
     },
-    async session({ session, token }) {
-      session.token = token.token as string
-      return session
+    providers: [
+        CredentialsProvider({
+            id: "credentials",
+            type: "credentials",
+            credentials: {},
+            async authorize(credentials: userCredentials) {
+                const { userName, password } = credentials;
+                var res = await axios.post(`${URLBase}/clientes/login`, {
+                        user: userName,
+                        senha: password,
+                    });
+
+                if (res.data == "Credenciais inválidas" || res.data[5] != 2) {
+                    throw new Error("Credenciais inválidas");
+                }
+                if (res.data) {
+                    return {
+                        id: res.data[0],
+                        name: res.data[2],
+                        token: res.data[6],
+                        typeUser: res.data[5],
+                    };
+                } else {
+                    return null;
+                }
+            },
+        }),
+    ],
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.user = {
+                    id: user.id,
+                    name: user.name,
+                    token: user.token,
+                    typeUser: user.typeUser,
+                };
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            session.token = token.token as string;
+            if (session.user && token.user) {
+                session.user = token.user;
+            }
+            return session;
+        },
     },
-  },
-  pages: {
-    signIn: '/',
-  }
-})
+    pages: {
+        signIn: "/",
+    },
+});

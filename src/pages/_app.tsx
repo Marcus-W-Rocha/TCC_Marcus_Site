@@ -6,7 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main>
+    <main className='min-h-screen'>
       <SessionProvider>
         <Layout>
           <Component {...pageProps} />
