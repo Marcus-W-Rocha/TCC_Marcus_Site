@@ -230,7 +230,7 @@ export default function Consulta() {
                                 openModal(element);
                               }}
                             >
-                              Adicionar Estoque
+                              Editar Estoque
                             </button>
                             <button onClick={()=>{
                                 router.push(`/editClient/${element["idCliente"]}`)
@@ -255,7 +255,7 @@ export default function Consulta() {
         <div className="border border-teal-500 shadow-lg modal-container bg-white w-11/12 md:max-w-md mx-auto rounded z-50 overflow-y-auto">
           <div className="modal-content py-4 text-left px-6">
             <div className="flex justify-between items-center pb-3">
-              <p className="text-2xl font-bold">Adicionar Estoque</p>
+              <p className="text-2xl font-bold">Editar Estoque</p>
               <div
                 className="modal-close cursor-pointer z-50"
                 onClick={closeModal}
@@ -323,7 +323,7 @@ export default function Consulta() {
                 className="focus:outline-none modal-close px-4 bg-gray-400 p-3 rounded-lg text-black hover:bg-gray-300"
                 onClick={closeModal}
               >
-                Cancel
+                Cancelar
               </button>
               <button
                 disabled={
@@ -339,7 +339,7 @@ export default function Consulta() {
                 className="focus:outline-none px-4 bg-teal-500 p-3 ml-3 rounded-lg text-white enabled:hover:bg-teal-400"
                 onClick={addEstoque}
               >
-                Confirm
+                Confirmar
               </button>
             </div>
           </div>
